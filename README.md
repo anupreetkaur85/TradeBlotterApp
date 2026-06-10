@@ -147,13 +147,15 @@ policy). It calls the API at `VITE_API_BASE_URL` (`frontend/.env`, default
 
 Validation failures return RFC 7807 `ValidationProblemDetails` (`400`).
 
-### Optional seeding
+### Seeding
 
-Seed data is **off by default** and never required (trades can be entered
-manually). In `Development`, enable a deterministic sample set:
+A deterministic sample set is **seeded on startup by default** (`Seeding:Enabled` +
+`Seeding:RunOnStartup`), so the blotter opens populated. Seed data is never
+required — set `Seeding:RunOnStartup` to `false` to start empty and enter trades
+manually. You can also toggle it at runtime:
 
 ```bash
-curl -X PUT http://localhost:5080/admin/seed-data -H "Content-Type: application/json" -d '{"enabled":true}'
+curl -X PUT http://localhost:5080/admin/seed-data -H "Content-Type: application/json" -d '{"enabled":true}'   # or false
 ```
 
 Disabling removes only seed rows (`IsSeedData = 1`); user-entered trades are never
@@ -206,13 +208,14 @@ contexts.
 
 | Section | Key | Meaning |
 | --- | --- | --- |
-| `Migrations` | `RunOnStartup` | Run DbUp migrations on boot (default `true`). |
-| `Seeding` | `Enabled` | Master switch for any seed mutation. |
-| `Seeding` | `RunOnStartup` | Seed on boot; honored only when `Enabled` (validated at startup). |
+| `Database` | `UseInMemory` | Use the in-memory store instead of SQL Server (default `true`). |
+| `Migrations` | `RunOnStartup` | Run DbUp migrations on boot — SQL mode only (default `true`). |
+| `Seeding` | `Enabled` | Master switch for any seed mutation (default `true`). |
+| `Seeding` | `RunOnStartup` | Seed the sample set on boot; honored only when `Enabled` (default `true`). |
 | `Admin` | `Enabled` | Map the `/admin/*` routes (dev only; no auth). |
 
-Base config is conservative (seeding/admin off); `appsettings.Development.json`
-enables the admin surface without auto-mutating data.
+The committed default is **in-memory + seeded** for zero-setup review; set
+`Database:UseInMemory=false` for SQL Server. `Admin:Enabled` is on in `Development`.
 
 ## Tests
 
