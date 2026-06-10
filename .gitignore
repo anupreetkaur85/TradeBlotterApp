@@ -35,3 +35,6 @@ logs/
 .idea/
 .vscode/
 /CLAUDE.md
+
+# transcript generator (local utility, not part of the deliverable)
+scripts/build_transcript.py
