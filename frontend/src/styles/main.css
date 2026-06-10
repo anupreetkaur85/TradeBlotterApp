@@ -1,0 +1,85 @@
+/* Dark is the default theme; [data-theme='light'] overrides it. */
+:root,
+:root[data-theme='dark'] {
+  --bg: #0f141b;
+  --surface: #1a212c;
+  --surface-raised: #222b38;
+  --border: #2b3543;
+  --muted: #9aa4b2;
+  --accent: #3b82f6;
+  --text: #e6e9ef;
+
+  --pos-long: #34d399;
+  --pos-short: #f87171;
+
+  --buy-fg: #6ee7b7;
+  --buy-bg: #123026;
+  --buy-border: #1f6f54;
+  --sell-fg: #fca5a5;
+  --sell-bg: #341417;
+  --sell-border: #7f1d1d;
+
+  --ok-fg: #6ee7b7;
+  --ok-bg: #123026;
+  --err-fg: #fca5a5;
+  --err-bg: #341417;
+  --info-fg: #93c5fd;
+  --info-bg: #122a45;
+
+  color-scheme: dark;
+}
+
+:root[data-theme='light'] {
+  --bg: #f5f6f8;
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --border: #e2e5ea;
+  --muted: #6b7280;
+  --accent: #2563eb;
+  --text: #1f2430;
+
+  --pos-long: #0f5132;
+  --pos-short: #b02a37;
+
+  --buy-fg: #0f5132;
+  --buy-bg: #d1e7dd;
+  --buy-border: #a3cfbb;
+  --sell-fg: #842029;
+  --sell-bg: #f8d7da;
+  --sell-border: #f1aeb5;
+
+  --ok-fg: #0f5132;
+  --ok-bg: #d1e7dd;
+  --err-fg: #842029;
+  --err-bg: #f8d7da;
+  --info-fg: #084298;
+  --info-bg: #cfe2ff;
+
+  color-scheme: light;
+}
+
+:root {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+button {
+  font-family: inherit;
+}
