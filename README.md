@@ -265,9 +265,19 @@ The SQL slice points elsewhere with `TRADEBLOTTER_TEST_CONNECTION`.
 - **.NET 9, SQL Server (LocalDB), Dapper + sprocs** instead of the brief's .NET 8 /
   SQLite / EF — chosen for a production-like, low-latency stack (repository owner's
   direction).
-- **Average cost** = moving weighted average; reducing a position leaves the
-  remaining average unchanged; crossing zero opens the residual at the crossing
-  price. Realized P&L is not reported (not required).
+- **Average cost convention.** The brief asks for "average cost … correct on mixed
+  buys/sells" but doesn't pin the convention, so positions use the standard
+  **average-cost-basis** (moving weighted average) — what a broker shows as
+  "average cost":
+  - **Adding** to a position (buy more of a long / sell more of a short) →
+    re-weights the average by the new trade.
+  - **Reducing** (sell part of a long / buy back part of a short) → the remaining
+    average is **unchanged**. A sale realizes P&L on the shares sold but does not
+    change the cost basis of the shares still held — averaging the exit price in
+    would misreport what those shares actually cost. Realized P&L is not reported
+    (out of scope).
+  - **Crossing through zero** → the residual position opens at the crossing trade's
+    price (a fresh basis).
 - **Oversells are allowed to go short** — a blotter records what happened rather
   than enforcing inventory.
 - **Idempotency** is opt-in via `Idempotency-Key`. Without it, submission is
