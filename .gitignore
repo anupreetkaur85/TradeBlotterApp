@@ -1,0 +1,37 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+
+# Node
+node_modules/
+dist/
+*.local
+
+# SQLite (database is generated at runtime)
+*.db
+*.db-shm
+*.db-wal
+
+# Env overrides (committed .env holds only the non-secret dev API URL)
+.env.local
+.env.*.local
+
+# Test / coverage
+[Tt]est[Rr]esults/
+coverage/
+*.trx
+*.coverage
+*.coveragexml
+
+# Logs
+logs/
+*.log
+
+# OS / editor
+.DS_Store
+.vs/
+.idea/
+.vscode/
+/CLAUDE.md

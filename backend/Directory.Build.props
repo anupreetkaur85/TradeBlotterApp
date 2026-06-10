@@ -1,0 +1,11 @@
+<Project>
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <ServerGarbageCollection>true</ServerGarbageCollection>
+    <!-- Invariant globalization is intentionally NOT enabled: Microsoft.Data.SqlClient
+         requires culture support and throws under invariant mode. -->
+  </PropertyGroup>
+</Project>
