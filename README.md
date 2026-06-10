@@ -28,8 +28,8 @@ scalability analysis is in [`docs/evaluation.md`](docs/evaluation.md).
   Studio or the [SQL Server Express LocalDB](https://learn.microsoft.com/sql/database-engine/configure-windows/sql-server-express-localdb)
   installer. Any SQL Server works; override the connection string to point elsewhere.
 
-> **No SQL Server?** Set `Database:UseInMemory` to `true` to run the whole service
-> against an in-memory store — see [Running without SQL Server](#running-without-sql-server).
+> **By default the service runs in-memory and seeded — no SQL Server needed.**
+> SQL Server is opt-in; see [Storage modes](#storage-modes).
 
 Verify LocalDB is running (if you use it):
 
@@ -43,9 +43,9 @@ From the repo root, launch the API and the web app in one step (each opens in it
 own PowerShell window):
 
 ```powershell
-.\run.ps1                         # SQL Server
-.\run.ps1 -UseInMemory            # no SQL Server required
-.\run.ps1 -UseInMemory -OpenBrowser
+.\run.ps1                         # in-memory + seeded (default, no SQL needed)
+.\run.ps1 -UseSql                 # SQL Server
+.\run.ps1 -OpenBrowser
 ```
 
 This starts the API on `http://localhost:5080` and the web app on
@@ -68,9 +68,9 @@ cd backend
 dotnet run --project TradeBlotter.Api
 ```
 
-On startup the service **creates the database and runs all migrations** (table,
-indexes/constraints, stored procedures) via DbUp — no manual DB setup needed.
-In `Development` it also exposes Swagger and the seed admin endpoints.
+By default the service runs **in-memory and seeded** (no database) — a plain
+`dotnet run` works with zero setup. In `Development` it also exposes Swagger and
+the seed admin endpoints. For SQL Server, see [Storage modes](#storage-modes).
 
 - API base (example): `http://localhost:5080` (set `ASPNETCORE_URLS` to choose)
 - API docs (Swagger UI): `/api-docs` — the root `/` redirects here (Development only)
@@ -93,21 +93,23 @@ Override without editing the file via environment variable:
 $env:ConnectionStrings__TradeBlotter = "Server=...;Database=TradeBlotter;..."
 ```
 
-### Running without SQL Server
+### Storage modes
 
-The service can run entirely **in-memory** — no database, no migrations — for
-reviewers who don't have SQL Server. Flip the toggle in
-`appsettings.json` (`"Database": { "UseInMemory": true }`) or via environment
-variable:
+The default (`appsettings.json`) is an **in-memory store, seeded on startup** —
+no database, no migrations — so reviewers can run everything with zero setup
+(`dotnet run` or `.\run.ps1`). Data lives in memory and resets on restart.
+
+To use **SQL Server** instead, turn the toggle off:
 
 ```powershell
-$env:Database__UseInMemory = "true"
+$env:Database__UseInMemory = "false"   # or "Database": { "UseInMemory": false } in appsettings.json
 dotnet run --project backend/TradeBlotter.Api
+# or:  .\run.ps1 -UseSql
 ```
 
-Everything works the same (trades, positions, symbol search, seeding, real-time)
-— data just lives in memory and resets on restart. SQL Server remains the default
-and production path.
+In SQL mode the service creates the database and runs all DbUp migrations
+(table, indexes/constraints, stored procedures) on startup, then seeds the
+sample trades idempotently. Set `Seeding:RunOnStartup` to `false` to skip seeding.
 
 ## Running the frontend
 

@@ -13,19 +13,20 @@
 .PARAMETER OpenBrowser
   Open the web app in the default browser after launching.
 
-.PARAMETER UseInMemory
-  Run the API without SQL Server. Data resets when the API stops.
+.PARAMETER UseSql
+  Run the API against SQL Server. The default is the seeded in-memory store
+  (no database required).
 
 .EXAMPLE
-  .\run.ps1 -OpenBrowser
+  .\run.ps1 -OpenBrowser          # in-memory + seeded (default)
 
 .EXAMPLE
-  .\run.ps1 -UseInMemory -OpenBrowser
+  .\run.ps1 -UseSql -OpenBrowser  # SQL Server
 #>
 param(
     [int] $BackendPort = 5080,
     [int] $FrontendPort = 5173,
-    [switch] $UseInMemory,
+    [switch] $UseSql,
     [switch] $OpenBrowser
 )
 
@@ -40,11 +41,13 @@ if (-not (Test-Path "$root\frontend\node_modules")) {
 }
 
 # Backtick-escaped $env so the child shell (not this one) evaluates them.
+# Default is in-memory (appsettings); -UseSql flips to SQL Server. Seeding is
+# config-driven (appsettings seeds on startup), so it is not set here.
 $backendCmd = "Set-Location '$root\backend'; " +
     "`$env:ASPNETCORE_ENVIRONMENT = 'Development'; " +
     "`$env:ASPNETCORE_URLS = 'http://localhost:$BackendPort'; " +
     "`$env:Cors__AllowedOrigins__0 = 'http://localhost:$FrontendPort'; " +
-    "`$env:Database__UseInMemory = '$($UseInMemory.IsPresent.ToString().ToLowerInvariant())'; " +
+    "`$env:Database__UseInMemory = '$((-not $UseSql).ToString().ToLowerInvariant())'; " +
     "dotnet run --project TradeBlotter.Api --no-launch-profile"
 
 $frontendCmd = "Set-Location '$root\frontend'; " +
@@ -59,7 +62,7 @@ Write-Host 'Trade Blotter starting in two windows:' -ForegroundColor Green
 Write-Host "  API      : http://localhost:$BackendPort"
 Write-Host "  API docs : http://localhost:$BackendPort/api-docs  (root '/' redirects here)"
 Write-Host "  Web app  : http://localhost:$FrontendPort"
-Write-Host "  Storage  : $(if ($UseInMemory) { 'In-memory (resets on stop)' } else { 'SQL Server' })"
+Write-Host "  Storage  : $(if ($UseSql) { 'SQL Server' } else { 'In-memory + seeded (resets on stop)' })"
 Write-Host ''
 Write-Host 'Close those windows (or Ctrl+C in each) to stop.' -ForegroundColor DarkGray
 
